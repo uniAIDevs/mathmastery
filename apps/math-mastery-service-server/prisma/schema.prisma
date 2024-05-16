@@ -1,0 +1,75 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model LearningPath {
+  createdAt       DateTime               @default(now())
+  description     String?
+  id              String                 @id @default(cuid())
+  level           EnumLearningPathLevel?
+  mentor          String?
+  progressReports ProgressReport[]
+  scenarios       Scenario[]
+  students        String?
+  title           String?
+  updatedAt       DateTime               @updatedAt
+}
+
+model User {
+  createdAt DateTime      @default(now())
+  email     String?
+  id        String        @id @default(cuid())
+  password  String?
+  role      EnumUserRole?
+  updatedAt DateTime      @updatedAt
+  username  String?
+}
+
+model Scenario {
+  createdAt            DateTime      @default(now())
+  createdBy            String?
+  description          String?
+  id                   String        @id @default(cuid())
+  learningPath         LearningPath? @relation(fields: [learningPathId], references: [id])
+  learningPathId       String?
+  problemStatement     String?
+  relatedVisualization String?
+  solution             Json?
+  title                String?
+  updatedAt            DateTime      @updatedAt
+}
+
+model Visualization {
+  content     Json?
+  createdAt   DateTime @default(now())
+  createdBy   String?
+  description String?
+  id          String   @id @default(cuid())
+  title       String?
+  updatedAt   DateTime @updatedAt
+}
+
+model ProgressReport {
+  createdAt          DateTime      @default(now())
+  feedback           String?
+  id                 String        @id @default(cuid())
+  lastUpdated        DateTime?
+  learningPath       LearningPath? @relation(fields: [learningPathId], references: [id])
+  learningPathId     String?
+  progressPercentage Float?
+  student            String?
+  updatedAt          DateTime      @updatedAt
+}
+
+enum EnumLearningPathLevel {
+  Option1
+}
+
+enum EnumUserRole {
+  Option1
+}
